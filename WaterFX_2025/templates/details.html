@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWS Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;400italic;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body, .airys-bg { background: #f7f9fa !important; font-size: 14px; }
+        .airys-card-grey {
+            box-shadow: 0 8px 32px rgba(99,102,241,0.04);
+            border-radius: 12px !important;
+            border: 1.2px solid #e3e6ea !important;
+            background: #fff;
+            padding: 2.5rem 4.5rem !important;
+            max-width: 1200px;
+            min-width: 420px;
+            margin: 0 auto;
+        }
+        .airys-section-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #0ea47a;
+            margin-bottom: 1.2rem;
+            margin-top: 2.2rem;
+        }
+        .airys-id {
+            font-size: 0.92rem;
+            color: #0ea47a;
+            background: #e6f7f2;
+            border-radius: 6px;
+            padding: 0.15em 0.5em;
+            font-weight: 400;
+            margin-left: 0.7em;
+        }
+        .airys-info-list, .airys-metrics-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .airys-info-item, .airys-metric-item {
+            min-width: 180px;
+            flex: 1 1 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 0.2rem 0.1rem;
+        }
+        .airys-info-label, .airys-metric-label {
+            color: #7a869a;
+            font-size: 0.93rem;
+            margin-bottom: 0.1rem;
+            text-align: left;
+        }
+        .airys-info-value, .airys-metric-value {
+            color: #222;
+            font-size: 1.01rem;
+            font-weight: 500;
+            text-align: left;
+            word-break: break-word;
+        }
+        .airys-map-frame {
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 0.5rem;
+            min-height: 220px;
+            margin-bottom: 2.2rem;
+            margin-top: 0.7rem;
+            width: 100%;
+            overflow: hidden;
+        }
+        .airys-facility-card {
+            border: 1px solid #e3e6ea;
+            border-radius: 8px;
+            padding: 1.1rem 1.2rem;
+            margin-bottom: 1.2rem;
+            background: #fafbfc;
+        }
+        .airys-facility-header {
+            font-weight: 600;
+            color: #0ea47a;
+            margin-bottom: 0.5rem;
+        }
+        .airys-viol-table {
+            width: 100%;
+            font-size: 0.93rem;
+            margin-bottom: 1.5rem;
+        }
+        .airys-viol-table th, .airys-viol-table td {
+            padding: 0.5em 0.7em;
+            border-bottom: 1px solid #e3e6ea;
+        }
+        .airys-viol-table th {
+            color: #0ea47a;
+            font-weight: 600;
+            background: #f7f9fa;
+        }
+        .airys-viol-table tr:last-child td {
+            border-bottom: none;
+        }
+        .airys-bordered-card {
+            border: 1.2px solid #e3e6ea !important;
+            border-radius: 10px;
+            background: #fff;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .airys-colonia-card {
+            margin-bottom: 2rem;
+        }
+        .airys-colonia-list {
+            margin: 0;
+            padding-left: 1.2em;
+            font-size: 1rem;
+        }
+        .airys-colonia-list li {
+            margin-bottom: 0.3em;
+        }
+        @media (max-width: 900px) {
+            .airys-card-grey { padding: 1.2rem 0.3rem !important; min-width: unset; max-width: 98vw; }
+            .airys-info-list, .airys-metrics-list { flex-direction: column; gap: 0.7rem; }
+        }
+        .airys-facility-group-list { display: flex; flex-direction: column; gap: 1.2rem; }
+        .airys-facility-group { width: 100%; }
+        .airys-facility-toggle {
+            width: 100%;
+            background: transparent;
+            border: 1.2px solid #e3e6ea;
+            outline: none;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #0ea47a;
+            padding: 0.7rem 1.5rem 0.7rem 1.5rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1.2rem;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .airys-facility-toggle:hover {
+            background: #f7f9fa;
+            border-color: #bfc7d1;
+        }
+        .airys-facility-type {
+            font-weight: 400;
+            font-size: 1.05rem;
+            color: #222;
+        }
+        .airys-facility-count {
+            font-size: 1.01rem;
+            color: #222;
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+        .airys-facility-arrow {
+            font-size: 0.9rem;
+            margin-left: 1.2rem;
+            color: #7a869a;
+            font-weight: 700;
+            transition: transform 0.2s;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .airys-facility-dropdown {
+            display: none;
+            padding: 0.7rem 1.2rem 0.7rem 2.2rem;
+            background: #fafbfc;
+            border-radius: 0 0 8px 8px;
+            border-top: 1px solid #e3e6ea;
+            margin-top: -2px;
+        }
+        .airys-facility-dropdown.show {
+            display: block;
+        }
+        .airys-facility-id-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .airys-facility-id-list li {
+            margin-bottom: 0.4em;
+            font-size: 0.98rem;
+        }
+        .airys-facility-group-subtext {
+            font-size: 0.92rem;
+            color: #7a869a;
+            margin-left: 0.2rem;
+            margin-bottom: 0.5rem;
+            margin-top: -0.2rem;
+        }
+        .airys-capacity-checks {
+            margin: 1.2rem 0 0.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+        .airys-capacity-check {
+            font-size: 1.01rem;
+            background: #f7f9fa;
+            border-radius: 8px;
+            padding: 0.7rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .airys-capacity-q {
+            color: #0ea47a;
+            font-weight: 500;
+        }
+        .airys-capacity-formula {
+            color: #7a869a;
+            font-size: 0.97rem;
+        }
+        .airys-capacity-value {
+            color: #222;
+            font-weight: 600;
+        }
+        .airys-bg-green {
+            background: #e6f7f2 !important;
+        }
+        .airys-bg-red {
+            background: #ffeaea !important;
+        }
+        .airys-bg-neutral {
+            background: #f7f9fa !important;
+        }
+        .airys-viol-toggle {
+            width: 100%;
+            background: transparent;
+            border: 1.2px solid #e3e6ea;
+            outline: none;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #222;
+            padding: 0.7rem 1.5rem 0.7rem 1.5rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1.2rem;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            margin-bottom: 0.5rem;
+        }
+        .airys-viol-toggle:hover {
+            background: #f7f9fa;
+            border-color: #bfc7d1;
+        }
+        .airys-viol-type {
+            font-weight: 400;
+            font-size: 1.05rem;
+            color: #222;
+        }
+        .airys-viol-count {
+            font-size: 1.01rem;
+            color: #222;
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+        .airys-viol-arrow {
+            font-size: 0.9rem;
+            margin-left: 1.2rem;
+            color: #7a869a;
+            font-weight: 700;
+            transition: transform 0.2s;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .airys-viol-dropdown {
+            display: none;
+            padding: 0.7rem 0 0.7rem 0;
+        }
+        .airys-viol-dropdown.show {
+            display: block;
+        }
+        .airys-metrics-list {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            gap: 2.2rem 2.5rem;
+            justify-content: flex-start;
+            align-items: stretch;
+        }
+        .airys-metric-item {
+            min-width: 140px;
+            flex: 1 1 0;
+            max-width: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 0.2rem 0.1rem;
+        }
+        /* Minimal modern tooltip for source badges */
+        .source-tooltip-wrap {
+          display: inline-block;
+          position: relative;
+        }
+        .source-badge {
+          display: inline-block;
+          background: #e6f7f2;
+          color: #0ea47a;
+          font-size: 0.92rem;
+          font-weight: 600;
+          border-radius: 50%;
+          width: 1.25em;
+          height: 1.25em;
+          text-align: center;
+          line-height: 1.25em;
+          margin-left: 0.5em;
+          cursor: pointer;
+          transition: background 0.15s;
+        }
+        .source-badge:hover, .source-badge:focus {
+          background: #d1fae5;
+          outline: none;
+        }
+        .source-tooltip {
+          display: none;
+          position: absolute;
+          left: 50%;
+          top: 2.1em;
+          transform: translateX(-50%);
+          min-width: 220px;
+          background: #fff;
+          color: #222;
+          border-radius: 10px;
+          box-shadow: 0 4px 16px rgba(99,102,241,0.10), 0 1.5px 6px rgba(124,58,237,0.08);
+          padding: 1em 1.2em;
+          z-index: 100;
+          font-size: 0.97rem;
+          text-align: left;
+          pointer-events: none;
+        }
+        .source-tooltip-title {
+          font-weight: 600;
+          color: #0ea47a;
+          margin-bottom: 0.2em;
+          font-size: 0.98rem;
+        }
+        .source-tooltip-desc {
+          color: #7a869a;
+          font-size: 0.93rem;
+          margin-bottom: 0.5em;
+        }
+        .source-tooltip-link {
+          color: #6366f1;
+          font-size: 0.93rem;
+          text-decoration: underline;
+        }
+        .source-tooltip-wrap:hover .source-tooltip,
+        .source-tooltip-wrap:focus-within .source-tooltip {
+          display: block;
+          pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="airys-bg">
+    {% include 'navbar.html' %}
+    <main class="container airys-maxwidth py-4">
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="airys-card-grey card w-100">
+                <div class="mb-4">
+                    <div class="d-flex align-items-center gap-3" style="flex-wrap:wrap;">
+                        <h2 class="fw-bold mb-0" style="font-size:2rem; letter-spacing:-0.5px; color:#222;">{{ rec.pwsname or rec.PWSName }}</h2>
+                        <span class="airys-id" style="font-size:1.05rem; font-weight:500; background:#e6f7f2; color:#0ea47a;">ID: {{ rec.pwsid or rec.PWSId }}</span>
+                    </div>
+                </div>
+                <!-- Entity Info -->
+                <div class="airys-section-title" style="position:relative; display:inline-block;">
+                    Entity Info
+                    {% if url %}
+                        <span class="source-tooltip-wrap">
+                            <span class="source-badge" tabindex="0">i</span>
+                            <span class="source-tooltip">
+                                <div class="source-tooltip-title">Texas Drinking Water Watch FactSheet</div>
+                                <div class="source-tooltip-desc">Official fact sheet for this water system from TCEQ.</div>
+                                <a href="{{ url }}" target="_blank" class="source-tooltip-link">Open Source</a>
+                            </span>
+                        </span>
+                    {% endif %}
+                </div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">Basic information about the public water system entity.</div>
+                <div class="airys-bordered-card">
+                    <div class="airys-info-list">
+                        {% for label, value in entity_info.items() %}
+                            {% if label != 'PWSID' %}
+                            <div class="airys-info-item">
+                                <div class="airys-info-label">{{ label|replace('_', ' ')|title }}</div>
+                                <div class="airys-info-value">{{ value }}</div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Contact Info -->
+                {% if contact_info %}
+                <div class="airys-section-title" style="position:relative; display:inline-block;">
+                    Contact
+                    {% if url %}
+                        <span class="source-tooltip-wrap">
+                            <span class="source-badge" tabindex="0">i</span>
+                            <span class="source-tooltip">
+                                <div class="source-tooltip-title">Texas Drinking Water Watch FactSheet</div>
+                                <div class="source-tooltip-desc">Official fact sheet for this water system from TCEQ.</div>
+                                <a href="{{ url }}" target="_blank" class="source-tooltip-link">Open Source</a>
+                            </span>
+                        </span>
+                    {% endif %}
+                </div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">How to reach the water system adminstrative contacts.</div>
+                <div class="airys-bordered-card">
+                    <div class="airys-info-list">
+                        {% for label, value in contact_info.items() %}
+                            <div class="airys-info-item">
+                                <div class="airys-info-label">{{ label|replace('_', ' ')|title }}</div>
+                                <div class="airys-info-value">{{ value }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Service Connection Info -->
+                {% if service_conn %}
+                <div class="airys-section-title" style="position:relative; display:inline-block;">
+                    Service Connection
+                    {% if url %}
+                        <span class="source-tooltip-wrap">
+                            <span class="source-badge" tabindex="0">i</span>
+                            <span class="source-tooltip">
+                                <div class="source-tooltip-title">Texas Drinking Water Watch FactSheet</div>
+                                <div class="source-tooltip-desc">Official fact sheet for this water system from TCEQ.</div>
+                                <a href="{{ url }}" target="_blank" class="source-tooltip-link">Open Source</a>
+                            </span>
+                        </span>
+                    {% endif %}
+                </div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">Details about the types and counts of service connections provided by this system.</div>
+                <div class="airys-bordered-card">
+                    <div class="airys-info-list">
+                        {% for label, value in service_conn.items() %}
+                            <div class="airys-info-item">
+                                <div class="airys-info-label">{{ label|replace('_', ' ') }}</div>
+                                <div class="airys-info-value">{{ value }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Colonias Served -->
+                <div class="airys-section-title" style="position:relative; display:inline-block;">
+                    Colonias Served
+                    <span class="source-tooltip-wrap">
+                        <span class="source-badge" tabindex="0">i</span>
+                        <span class="source-tooltip">
+                            <div class="source-tooltip-title">HUD Colonias Communities</div>
+                            <div class="source-tooltip-desc">U.S. Department of Housing and Urban Development Colonias dataset.</div>
+                            <a href="https://hudgis-hud.opendata.arcgis.com/datasets/HUD::colonias-communities/explore?location=28.794069%2C-105.627537%2C6.71" target="_blank" class="source-tooltip-link">Open Source</a>
+                        </span>
+                    </span>
+                </div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">List of colonias (unincorporated communities) served by this water system.</div>
+                <div class="airys-colonia-card airys-bordered-card">
+                    {% if colonias_served and colonias_served|length > 0 %}
+                        <ul class="airys-colonia-list">
+                            {% for colonia in colonias_served %}
+                                <li>{{ colonia }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <span class="text-muted">No colonias served.</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <!-- Map -->
+                <div class="airys-section-title" style="position:relative; display:inline-block;">
+                    Service Area Map
+                    <span class="source-tooltip-wrap">
+                        <span class="source-badge" tabindex="0">i</span>
+                        <span class="source-tooltip">
+                            <div class="source-tooltip-title">Texas Water Development Board & U.S. Census Bureau</div>
+                            <div class="source-tooltip-desc">Service area boundaries from TWDB and Census TIGER/Line.</div>
+                            <a href="https://hudgis-hud.opendata.arcgis.com/datasets/HUD::colonias-communities/explore?location=28.746360%2C-105.601505%2C6.68" target="_blank" class="source-tooltip-link">HUD Source</a><br/>
+                            <a href="https://www2.census.gov/geo/tiger/TIGER2020/BG/" target="_blank" class="source-tooltip-link">Census Source</a>
+                        </span>
+                    </span>
+                </div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">Interactive map showing the boundaries of the water system's service area based on US Census block groups.</div>
+                <div class="airys-bordered-card">
+                    <div class="airys-map-frame">
+                        {% if map_html %}{{ map_html|safe }}{% else %}<p class="text-muted small">No map available.</p>{% endif %}
+                    </div>
+                </div>
+                <!-- Demographic Metrics -->
+                {% if metrics %}
+                <div class="airys-section-title" style="position:relative; display:inline-block;">
+                    Demographic Metrics
+                    <span class="source-tooltip-wrap">
+                        <span class="source-badge" tabindex="0">i</span>
+                        <span class="source-tooltip">
+                            <div class="source-tooltip-title">US Census ACS 5-Year Estimate</div>
+                            <div class="source-tooltip-desc">American Community Survey 5-year demographic estimates.</div>
+                            <a href="https://www.census.gov/data/developers/data-sets/acs-5year.html" target="_blank" class="source-tooltip-link">Open Source</a>
+                        </span>
+                    </span>
+                </div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">Key demographic and socioeconomic indicators for the service area.</div>
+                <div class="airys-bordered-card">
+                    <div class="airys-metrics-list">
+                        {% set label_map = {
+                            'amhi': 'AMHI',
+                            'total_pop': 'Total Population',
+                            'unemp_count': 'Unemployment Count',
+                            'poverty_rate': 'Poverty Rate',
+                            'avg_household_size': 'Avg Household Size'
+                        } %}
+                        {% set code_map = {
+                            'amhi': 'B19013_001E',
+                            'total_pop': 'B01003_001E',
+                            'unemp_count': 'B23025_005E',
+                            'avg_household_size': 'B25010_001E',
+                            'poverty_rate': 'B17001_002E',
+                            'poverty_count': 'B17001_002E'
+                        } %}
+                        {% for label, value in metrics.items() %}
+                            <div class="airys-metric-item">
+                                <div class="airys-metric-label">
+                                    {{ label_map[label] if label in label_map else label|replace('_', ' ')|title }}
+                                </div>
+                                <div class="airys-metric-value">
+                                    {{ value|sigfig_plain if value is not none else 'N/A' }}
+                                    {% if label in code_map %}
+                                    <span class="demo-tooltip-wrap">
+                                        <span class="demo-badge" tabindex="0">?</span>
+                                        <span class="demo-tooltip">{{ code_map[label] }}</span>
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Average Monthly Flows -->
+                <div class="airys-section-title">Average Monthly Flows per Household</div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">Estimated average monthly water and sewer flow per household, based on household size.</div>
+                <div class="airys-bordered-card">
+                    <div class="airys-info-list">
+                        <div class="airys-info-item">
+                            <div class="airys-info-label">Average monthly water flow per household</div>
+                            <div class="airys-info-value">
+                                {% if water_flow_per_household is not none %}
+                                    {{ water_flow_per_household }} gallons
+                                    <span class="text-muted small">(2325 × household size)</span>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="airys-info-item">
+                            <div class="airys-info-label">Average monthly sewer flow per household</div>
+                            <div class="airys-info-value">
+                                {% if sewer_flow_per_household is not none %}
+                                    {{ sewer_flow_per_household }} gallons
+                                    <span class="text-muted small">(1279 × household size)</span>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Facilities -->
+                <div class="airys-section-title" style="position:relative; display:inline-block;">
+                    Facilities
+                    {% if url2 %}
+                        <span class="source-tooltip-wrap">
+                            <span class="source-badge" tabindex="0">i</span>
+                            <span class="source-tooltip">
+                                <div class="source-tooltip-title">Texas Drinking Water Watch Facilities Sheet</div>
+                                <div class="source-tooltip-desc">Facility details for this water system from TCEQ.</div>
+                                <a href="{{ url2 }}" target="_blank" class="source-tooltip-link">Open Source</a>
+                            </span>
+                        </span>
+                    {% endif %}
+                </div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">Overview of water system facilities, including production, storage, and facility types.</div>
+                {% if facility_metrics %}
+                <div class="airys-bordered-card">
+                    <div class="airys-info-list">
+                        {% set label_map = {
+                            'Production (MGD)': 'Provided Production Capacity (PPRC)',
+                            'Storage Cap.': 'Total Storage Capacity (TSTC)',
+                            'Avg Daily': 'Average Daily Usage (ADU)',
+                            'Max Daily': 'Maximum Daily Demand (MDD)'
+                        } %}
+                        {% for label, value in facility_metrics.items() %}
+                            <div class="airys-info-item">
+                                <div class="airys-info-label">{{ label_map[label] if label in label_map else label }}</div>
+                                <div class="airys-info-value">{{ value }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% set mdd = (facility_metrics['Max Daily']|replace('Not Available','')|replace(',','')|replace('MGD','')|replace('MG','')|trim|float(0)) %}
+                    {% set pprc = (facility_metrics['Production (MGD)']|replace('Not Available','')|replace(',','')|replace('MGD','')|replace('MG','')|trim|float(0)) %}
+                    {% set tstc = (facility_metrics['Storage Cap.']|replace('Not Available','')|replace(',','')|replace('MGD','')|replace('MG','')|trim|float(0)) %}
+                    {% set ratio_prod = (mdd / pprc) if pprc else None %}
+                    {% set ratio_stor = (mdd / tstc) if tstc else None %}
+                    <div class="airys-capacity-checks mt-3">
+                        <div class="airys-capacity-check{% if ratio_prod is not none %}{% if ratio_prod >= 0.85 %} airys-bg-green{% else %} airys-bg-red{% endif %}{% else %} airys-bg-neutral{% endif %}">
+                            <span class="airys-capacity-q" style="color:#222;">Is required production ≥ 85% of total production?</span>
+                            <span class="airys-capacity-formula">MDD ÷ PPRC = {% if ratio_prod is not none %}{{ (ratio_prod * 100)|round(1) }}%{% else %}N/A{% endif %}</span>
+                            <span style="font-weight:700; color:#222; margin-left:1em;">{% if ratio_prod is not none %}{% if ratio_prod >= 0.85 %}Yes{% else %}No{% endif %}{% else %}N/A{% endif %}</span>
+                        </div>
+                        <div class="airys-capacity-check{% if ratio_stor is not none %}{% if ratio_stor >= 0.85 %} airys-bg-green{% else %} airys-bg-red{% endif %}{% else %} airys-bg-neutral{% endif %}">
+                            <span class="airys-capacity-q" style="color:#222;">Is required storage ≥ 85% of total storage?</span>
+                            <span class="airys-capacity-formula">MDD ÷ TSTC = {% if ratio_stor is not none %}{{ (ratio_stor * 100)|round(1) }}%{% else %}N/A{% endif %}</span>
+                            <span style="font-weight:700; color:#222; margin-left:1em;">{% if ratio_stor is not none %}{% if ratio_stor >= 0.85 %}Yes{% else %}No{% endif %}{% else %}N/A{% endif %}</span>
+                        </div>
+                    </div>
+                    <!-- Main Facilities Dropdown -->
+                    <button class="airys-facility-toggle" type="button" data-toggle="facility" data-target="main-facility-dropdown" style="margin-top:2rem;">
+                        <span class="airys-facility-type" style="font-weight:600; color:#0ea47a;">All Facilities</span>
+                        <span class="airys-facility-arrow">▾</span>
+                    </button>
+                    <div class="airys-facility-dropdown" id="main-facility-dropdown">
+                        <div class="airys-facility-group-list">
+                            {% for group in facilities_grouped %}
+                            <div class="airys-facility-group">
+                                <button class="airys-facility-toggle" type="button" data-toggle="facility" data-target="fac-{{ loop.index }}">
+                                    <span class="airys-facility-type">Facility Type: {{ group.type }}</span>
+                                    <span class="airys-facility-count">{{ group.count }} facilities</span>
+                                    <span class="airys-facility-arrow">▾</span>
+                                </button>
+                                <div class="airys-facility-group-subtext"></div>
+                                <div class="airys-facility-dropdown" id="fac-{{ loop.index }}">
+                                    <ul class="airys-facility-id-list">
+                                        {% for fac in group.facilities %}
+                                        <li><span class="airys-info-label">ID:</span> <span class="airys-info-value">{{ fac.facility_id }}</span> <span class="airys-info-label">Status:</span> <span class="airys-info-value">{{ fac.facility_status }}</span></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Violations (clubbed) -->
+                <div class="airys-section-title" style="position:relative; display:inline-block;">
+                    Violations
+                    {% if url %}
+                        <span class="source-tooltip-wrap">
+                            <span class="source-badge" tabindex="0">i</span>
+                            <span class="source-tooltip">
+                                <div class="source-tooltip-title">Texas Drinking Water Watch FactSheet</div>
+                                <div class="source-tooltip-desc">Official fact sheet for this water system from TCEQ.</div>
+                                <a href="{{ url }}" target="_blank" class="source-tooltip-link">Open Source</a>
+                            </span>
+                        </span>
+                    {% endif %}
+                </div>
+                <div style="font-size:0.97rem; color:#7a869a; font-weight:400; margin-bottom:1.1rem;">Compliance history, including individual and group violations related to water quality and safety.</div>
+                {% set all_violations = (indiv_viol or []) + (group_viol or []) %}
+                {% set ns = namespace(has_mcl_violation=false, has_coliform_violation=false) %}
+                {% for viol in all_violations %}
+                    {% if viol %}
+                        {% set vtext = viol['Violation']|lower if 'Violation' in viol and viol['Violation'] else '' %}
+                        {% set ctext = viol['Contaminant']|lower if 'Contaminant' in viol and viol['Contaminant'] else '' %}
+                        {# MCL logic: violation mentions mcl AND major/minor/average/single sample #}
+                        {% if 'mcl' in vtext and ('major' in vtext or 'minor' in vtext or 'average' in vtext or 'single sample' in vtext) %}
+                            {% set ns.has_mcl_violation = true %}
+                        {% endif %}
+                        {# Coliform/E. coli logic: contaminant is coliform/e. coli/tcr #}
+                        {% if 'coliform' in ctext or 'e. coli' in ctext or 'tcr' in ctext %}
+                            {% set ns.has_coliform_violation = true %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <div class="airys-bordered-card" style="position:relative;">
+                    <div class="disclaimer-tooltip-wrap disclaimer-topright">
+                        <span class="disclaimer-badge" tabindex="0">!</span>
+                        <span class="disclaimer-tooltip">Based on a non-exhaustive search for related violations</span>
+                    </div>
+                    <div class="airys-capacity-checks mb-3">
+                        <div class="airys-capacity-check{% if ns.has_mcl_violation %} airys-bg-green{% else %} airys-bg-red{% endif %}">
+                            <span class="airys-capacity-q" style="color:#222;">Has the system exceeded the MCL?</span>
+                            <span class="airys-capacity-formula">MCL Violation Check: {% if ns.has_mcl_violation %}Yes{% else %}No{% endif %}</span>
+                            <span style="font-weight:700; color:#222; margin-left:1em;">{% if ns.has_mcl_violation %}Yes{% else %}No{% endif %}</span>
+                        </div>
+                        <div class="airys-capacity-check{% if ns.has_coliform_violation %} airys-bg-green{% else %} airys-bg-red{% endif %}">
+                            <span class="airys-capacity-q" style="color:#222;">Has the system had residuals < 0.2 mg/L free chlorine or < 0.5 mg/L chloramines?</span>
+                            <span class="airys-capacity-formula">Coliform/E. coli Check: {% if ns.has_coliform_violation %}Yes{% else %}No{% endif %}</span>
+                            <span style="font-weight:700; color:#222; margin-left:1em;">{% if ns.has_coliform_violation %}Yes{% else %}No{% endif %}</span>
+                        </div>
+                    </div>
+                    <button class="airys-viol-toggle" type="button" data-toggle="violation" data-target="indiv-viol-dropdown">
+                        <span class="airys-viol-type">Individual Violations</span>
+                        <span class="airys-viol-count">{{ indiv_viol|length }} violations</span>
+                        <span class="airys-viol-arrow">▾</span>
+                    </button>
+                    <div class="airys-viol-dropdown" id="indiv-viol-dropdown">
+                        <table class="airys-viol-table">
+                            <thead>
+                                <tr>
+                                    <th>Violation No.</th>
+                                    <th>Date</th>
+                                    <th>Contaminant</th>
+                                    <th>Violation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if indiv_viol and indiv_viol|length > 0 %}
+                                    {% for viol in indiv_viol %}
+                                    <tr>
+                                        <td>{{ viol['Violation No.'] }}</td>
+                                        <td>{{ viol['Date'] }}</td>
+                                        <td>{{ viol['Contaminant'] }}</td>
+                                        <td>{{ viol['Violation'] if 'Violation' in viol else '' }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td colspan="4" class="text-muted">No data</td></tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="airys-viol-toggle" type="button" data-toggle="violation" data-target="group-viol-dropdown">
+                        <span class="airys-viol-type">Group Violations</span>
+                        <span class="airys-viol-count">{{ group_viol|length }} violations</span>
+                        <span class="airys-viol-arrow">▾</span>
+                    </button>
+                    <div class="airys-viol-dropdown" id="group-viol-dropdown">
+                        <table class="airys-viol-table">
+                            <thead>
+                                <tr>
+                                    <th>Violation No.</th>
+                                    <th>Date</th>
+                                    <th>Contaminant</th>
+                                    <th>Violation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if group_viol and group_viol|length > 0 %}
+                                    {% for viol in group_viol %}
+                                    <tr>
+                                        <td>{{ viol['Violation No.'] }}</td>
+                                        <td>{{ viol['Date'] }}</td>
+                                        <td>{{ viol['Contaminant'] }}</td>
+                                        <td>{{ viol['Violation'] if 'Violation' in viol else '' }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td colspan="4" class="text-muted">No data</td></tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    function toggleDropdown(targetId) {
+                        const dropdown = document.getElementById(targetId);
+                        const button = document.querySelector(`[data-target="${targetId}"]`);
+                        const arrow = button ? button.querySelector('[class*="arrow"]') : null;
+                        if (dropdown && button) {
+                            const isOpen = dropdown.classList.contains('show');
+                            if (isOpen) {
+                                dropdown.classList.remove('show');
+                                if (arrow) arrow.style.transform = '';
+                            } else {
+                                dropdown.classList.add('show');
+                                if (arrow) arrow.style.transform = 'rotate(180deg)';
+                            }
+                        }
+                    }
+                    document.addEventListener('click', function(e) {
+                        const button = e.target.closest('[data-toggle]');
+                        if (button) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const targetId = button.getAttribute('data-target');
+                            toggleDropdown(targetId);
+                        }
+                    });
+                });
+                </script>
+            </div>
+        </div>
+    </main>
+    <footer class="airys-footer py-4 mt-5">
+        <div class="container airys-maxwidth d-flex flex-column flex-md-row align-items-center justify-content-between">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <span class="airys-logo me-2">💧</span>
+                <span class="fw-bold">WaterFX</span>
+            </div>
+            <div class="text-muted small">© 2025 WaterFX. All rights reserved.</div>
+        </div>
+    </footer>
+</div>
+</body>
+</html> 
