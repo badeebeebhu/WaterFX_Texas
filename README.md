@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # WaterFX
 
 A Flask web app for searching, selecting, and viewing detailed information about Texas public water systems, including metrics, mapping, facilities, and colonias served.
@@ -71,3 +72,6 @@ A Flask web app for searching, selecting, and viewing detailed information about
 - **Details:** View the dashboard with all system info, map, metrics, facilities, violations, and colonias served.
 
 ---
+=======
+Development spearheaded by Spurti Nimbali, polished by Bhu Kongtaveelert
+>>>>>>> 4e9b8c4b3df714bbd77c623ebb327239c386ef63
